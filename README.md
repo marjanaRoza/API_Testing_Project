@@ -5,7 +5,7 @@ An API testing project using **Postman, JavaScript, and Newman** to validate the
 
 ## 📊 Newman Test Execution Summary
 
-![Newman Run Summary](screenshots/newman-summary.png)
+![Newman Run Summary](Newman_Run_Summary.png)
 
 **Execution Results**
 
