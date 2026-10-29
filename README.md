@@ -37,7 +37,7 @@ An API testing project using **Postman, JavaScript, and Newman** to validate the
 - `API_Testing_Collection.postman_collection.json` – API requests and automated test scripts
 - `Test_Environment.postman_environment.json` – Environment configuration
 - `report.html` – Detailed Newman execution report
-- `screenshots/newman-summary.png` – Newman test execution summary
+- `Newman_Run_Summary.png` – Newman test execution summary
 
 ## ▶️ How to Run
 1. Import the Postman collection and environment JSON files into Postman.
