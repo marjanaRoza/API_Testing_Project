@@ -46,4 +46,9 @@ An API testing project using **Postman, JavaScript, and Newman** to validate the
 4. Open `report.html` in a browser to review the saved test results.
 
 ## 💡 Key Skills Demonstrated
-API Testing · Test Automation · JavaScript Assertions · Environment Configuration · Dynamic Test Data · Newman Reporting
+- API Testing
+- Test Automation
+- JavaScript Assertions
+- Environment Configuration
+- Dynamic Test Data Generation
+- Newman Reporting
