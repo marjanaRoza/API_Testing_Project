@@ -1,0 +1,434 @@
+{
+  "info": {
+    "_postman_id": "237a524a-b4d8-4d68-8026-b72cb5ccc0c7",
+    "name": "API_Testing_Collection",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58366234",
+    "_collection_link": "https://go.postman.co/collection/58366234-237a524a-b4d8-4d68-8026-b72cb5ccc0c7?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "GetBooking",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Assertion for Status code\npm.test(\"TC-1. Verify if the status code is 200\", function () {\n    pm.expect(pm.response.code).to.eql(200);\n});\n\n// Assertion for Response time\npm.test(\"TC-2. Verify if the response time is less than 5000ms\", function () {\n    pm.expect(pm.response.responseTime).to.be.below(5000);\n});\n\n// Assertion for Response size\npm.test(\"TC-3. Verify if the response size is less than 100000 bytes\", function () {\n    pm.expect(pm.response.text().length).to.be.below(100000);\n});\n\n// Assertion for booking ids\npm.test(\"TC-4. Verify if the response contains booking ids\", function () {\n    var responsebody = pm.response.json();\n    pm.expect(responsebody).to.have.length.above(0);\n});\n"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/booking",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "booking"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CreateBooking",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "var responsebody = pm.response.json();\r\npm. environment.set (\"id\", responsebody.bookingid);\r\n\r\n\r\n// Assertion for Status code\r\npm.test(\"TC-1. Verify if the status code is 201\", function () {\r\n    pm.expect(pm.response.code).to.eql(201);\r\n});\r\n\r\n// Assertion for Response time\r\npm.test(\"TC-2. Verify if the response time is less than 500ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(500);\r\n});\r\n\r\n// Assertion for Response size\r\npm.test(\"TC-3. Verify if the response size is less than 5000 bytes\", function () {\r\n    pm.expect(pm.response.text().length).to.be.below(5000);\r\n});\r\n\r\n// Assertion for First name\r\npm.test(\"TC-4. Verify if the first name is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"firstname\")).to.eql(responsebody.booking.firstname);\r\n});\r\n\r\n// Assertion for Last name\r\npm.test(\"TC-5. Verify if the last name is matching the environment\", function () {\r\n    pm.expect(responsebody.booking.lastname).to.eql(pm.environment.get(\"lastname\"));\r\n});\r\n\r\n// Assertion for Total price\r\npm.test(\"TC-6. Verify if the total price is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"totalprice\")).to.eql(String(responsebody.booking.totalprice));\r\n});\r\n\r\n// Assertion for Deposit paid\r\npm.test(\"TC-7. Verify if the deposit paid is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"depositpaid\")).to.eql(String(responsebody.booking.depositpaid));\r\n});\r\n\r\n// Assertion for Checkin date\r\npm.test(\"TC-8. Verify if the checkin date is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"checkindate\")).to.eql(responsebody.booking.bookingdates.checkin);\r\n});\r\n\r\n// Assertion for Checkout date\r\npm.test(\"TC-9. Verify if the checkout date is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"checkoutdate\")).to.eql(responsebody.booking.bookingdates.checkout);\r\n});\r\n\r\n// Assertion for Additional needs\r\npm.test(\"TC-10. Verify if the additional needs is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"additionalneeds\")).to.eql(responsebody.booking.additionalneeds);\r\n});\r\n\r\n// Assertion for Booking id\r\npm.test(\"TC-11. Verify if the booking id is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"id\")).to.eql(responsebody.bookingid);\r\n    });\r\n "
+            ]
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// First Name\nvar firstname = pm.variables.replaceIn(\"{{$randomFirstName}}\");\npm.environment.set(\"firstname\", firstname);\n\n\n// Last Name\nvar lastname = pm.variables.replaceIn(\"{{$randomLastName}}\");\npm.environment.set(\"lastname\", lastname);\n\n\n// Total Price\nvar totalprice = pm.variables.replaceIn(\"{{$randomInt}}\");\npm.environment.set(\"totalprice\", totalprice);\n\n\n//Deposit Paid\nvar depositpaid = pm.variables.replaceIn(\"{{$randomBoolean}}\");\npm.environment.set(\"depositpaid\", depositpaid);\n\n\n// Today's date as Checkin Date\nvar checkin = require('moment');\nconsole.log(checkin);\nvar checkinDate = checkin().format('YYYY-MM-DD');\nconsole.log(checkinDate);\npm.environment.set(\"checkindate\", checkinDate);\n\n\n// Checkout Date after 10 days\nvar checkout = require('moment');\nconsole.log(checkout);\nvar checkoutDate = checkout(). add(10, 'days').format('YYYY-MM-DD');\npm.environment.set(\"checkoutdate\", checkoutDate);\n\n\n// Additional Needs\nvar additionalneeds = pm.variables.replaceIn(\"{{$randomNoun}}\");\npm.environment.set(\"additionalneeds\", additionalneeds);"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"firstname\" : \"{{firstname}}\",\n    \"lastname\" : \"{{lastname}}\",\n    \"totalprice\" : {{totalprice}},\n    \"depositpaid\" : {{depositpaid}},\n    \"bookingdates\" : {\n        \"checkin\" : \"{{checkindate}}\",\n        \"checkout\" : \"{{checkoutdate}}\"\n    },\n    \"additionalneeds\" : \"{{additionalneeds}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/booking",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "booking"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetBookingId",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Assertion for Status code\npm.test(\"TC-1. Verify if the status code is 200\", function () {\n    pm.expect(pm.response.code).to.eql(200);\n});\n\n// Assertion for Response time\npm.test(\"TC-2. Verify if the response time is less than 500ms\", function () {\n    pm.expect(pm.response.responseTime).to.be.below(500);\n});\n\n// Assertion for Response size\npm.test(\"TC-3. Verify if the response size is less than 200 bytes\", function () {\n    pm.expect(pm.response.text().length).to.be.below(200);\n});\n\n// Assertion for First name\nvar responsebody = pm.response.json();\npm.test(\"TC-4. Verify if the first name is matching the environment\", function () {\n    pm.expect(pm.environment.get(\"firstname\")).to.eql(responsebody.firstname);\n});\n\n// Assertion for Last name\npm.test(\"TC-5. Verify if the last name is matching the environment\", function () {\n    pm.expect(responsebody.lastname).to.eql(pm.environment.get(\"lastname\"));\n});\n\n// Assertion for Total price\npm.test(\"TC-6. Verify if the total price is matching the environment\", function () {\n    pm.expect(pm.environment.get(\"totalprice\")).to.eql(String(responsebody.totalprice));\n});\n\n// Assertion for Deposit paid\npm.test(\"TC-7. Verify if the deposit paid is matching the environment\", function () {\n    pm.expect(pm.environment.get(\"depositpaid\")).to.eql(String(responsebody.depositpaid));\n});\n\n// Assertion for Checkin date\npm.test(\"TC-8. Verify if the checkin date is matching the environment\", function () {\n    pm.expect(pm.environment.get(\"checkindate\")).to.eql(responsebody.bookingdates.checkin);\n});\n\n// Assertion for Checkout date\npm.test(\"TC-9. Verify if the checkout date is matching the environment\", function () {\n    pm.expect(pm.environment.get(\"checkoutdate\")).to.eql(responsebody.bookingdates.checkout);\n});\n\n// Assertion for Additional needs\npm.test(\"TC-10. Verify if the additional needs is matching the environment\", function () {\n    pm.expect(pm.environment.get(\"additionalneeds\")).to.eql(responsebody.additionalneeds);\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/booking/{{id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "booking",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CreateToken",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "var responseBody = pm.response.json();\r\npm.environment.set(\"token\", responseBody.token);\r\n\r\n// Assertion for Status code\r\npm.test(\"TC-1. Verify if the status code is 201\", function () {\r\n    pm.expect(pm.response.code).to.eql(201);\r\n});\r\n\r\n// Assertion for Response time\r\npm.test(\"TC-2. Verify if the response time is less than 500ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(500);\r\n});\r\n\r\n// Assertion for Response size\r\npm.test(\"TC-3. Verify if the response size is less than 50 bytes\", function () {\r\n    pm.expect(pm.response.text().length).to.be.below(50);\r\n});\r\n\r\n// Assertion for token presence\r\npm.test(\"TC-4. Verify if the token is present in the response\", function () {\r\n    pm.expect(responseBody.token).to.not.be.null;\r\n});\r\n\r\n// Assertion for Token value\r\npm.test(\"TC-5. Verify if the token value is matching the environment\", function () {\r\n    pm.expect(responseBody.token).to.eql(pm.environment.get(\"token\"));\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"username\" : \"admin\",\n    \"password\" : \"password123\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/auth",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UpdateBooking",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Today's date as Checkin Date\r\nvar checkin = require('moment');\r\nconsole.log(checkin);\r\nvar checkinDate = checkin().format('YYYY-MM-DD');\r\nconsole.log(checkinDate);\r\npm.environment.set(\"checkindate\", checkinDate);\r\n\r\n\r\n// Checkout Date after 15 days\r\nvar checkout = require('moment');\r\nconsole.log(checkout);\r\nvar checkoutDate = checkout(). add(15, 'days').format('YYYY-MM-DD');\r\npm.environment.set(\"checkoutdate\", checkoutDate);\r\n\r\n\r\n"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Assertion for Status code\r\npm.test(\"TC-1. Verify if the status code is 200\", function () {\r\n    pm.expect(pm.response.code).to.eql(200);\r\n});\r\n\r\n// Assertion for Response time\r\npm.test(\"TC-2. Verify if the response time is less than 500ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(500);\r\n});\r\n\r\n// Assertion for Response size\r\npm.test(\"TC-3. Verify if the response size is less than 200 bytes\", function () {\r\n    pm.expect(pm.response.text().length).to.be.below(200);\r\n});\r\n\r\n// Assertion for First name\r\nvar responsebody = pm.response.json();\r\npm.test(\"TC-4. Verify if the first name is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"firstname\")).to.eql(responsebody.firstname);\r\n});\r\n\r\n// Assertion for Last name\r\npm.test(\"TC-5. Verify if the last name is matching the environment\", function () {\r\n    pm.expect(responsebody.lastname).to.eql(pm.environment.get(\"lastname\"));\r\n});\r\n\r\n// Assertion for Total price\r\npm.test(\"TC-6. Verify if the total price is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"totalprice\")).to.eql(String(responsebody.totalprice));\r\n});\r\n\r\n// Assertion for Deposit paid\r\npm.test(\"TC-7. Verify if the deposit paid is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"depositpaid\")).to.eql(String(responsebody.depositpaid));\r\n});\r\n\r\n// Assertion for Checkin date\r\npm.test(\"TC-8. Verify if the checkin date is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"checkindate\")).to.eql(responsebody.bookingdates.checkin);\r\n});\r\n\r\n// Assertion for Checkout date\r\npm.test(\"TC-9. Verify if the checkout date is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"checkoutdate\")).to.eql(responsebody.bookingdates.checkout);\r\n});\r\n\r\n// Assertion for Additional needs\r\npm.test(\"TC-10. Verify if the additional needs is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"additionalneeds\")).to.eql(responsebody.additionalneeds);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "token={{token}}"
+          },
+          {
+            "key": "Authorization",
+            "value": "Basic"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"firstname\" : \"{{firstname}}\",\r\n    \"lastname\" : \"{{lastname}}\",\r\n    \"totalprice\" : {{totalprice}},\r\n    \"depositpaid\" : {{depositpaid}},\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"{{checkindate}}\",\r\n        \"checkout\" : \"{{checkoutdate}}\"\r\n    },\r\n    \"additionalneeds\" : \"{{additionalneeds}}\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/booking/{{id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "booking",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetBookingId Copy",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Assertion for Status code\r\npm.test(\"TC-1. Verify if the status code is 200\", function () {\r\n    pm.expect(pm.response.code).to.eql(200);\r\n});\r\n\r\n// Assertion for Response time\r\npm.test(\"TC-2. Verify if the response time is less than 500ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(500);\r\n});\r\n\r\n// Assertion for Response size\r\npm.test(\"TC-3. Verify if the response size is less than 200 bytes\", function () {\r\n    pm.expect(pm.response.text().length).to.be.below(200);\r\n});\r\n\r\n// Assertion for First name\r\nvar responsebody = pm.response.json();\r\npm.test(\"TC-4. Verify if the first name is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"firstname\")).to.eql(responsebody.firstname);\r\n});\r\n\r\n// Assertion for Last name\r\npm.test(\"TC-5. Verify if the last name is matching the environment\", function () {\r\n    pm.expect(responsebody.lastname).to.eql(pm.environment.get(\"lastname\"));\r\n});\r\n\r\n// Assertion for Total price\r\npm.test(\"TC-6. Verify if the total price is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"totalprice\")).to.eql(String(responsebody.totalprice));\r\n});\r\n\r\n// Assertion for Deposit paid\r\npm.test(\"TC-7. Verify if the deposit paid is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"depositpaid\")).to.eql(String(responsebody.depositpaid));\r\n});\r\n\r\n// Assertion for Checkin date\r\npm.test(\"TC-8. Verify if the checkin date is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"checkindate\")).to.eql(responsebody.bookingdates.checkin);\r\n});\r\n\r\n// Assertion for Checkout date\r\npm.test(\"TC-9. Verify if the checkout date is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"checkoutdate\")).to.eql(responsebody.bookingdates.checkout);\r\n});\r\n\r\n// Assertion for Additional needs\r\npm.test(\"TC-10. Verify if the additional needs is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"additionalneeds\")).to.eql(responsebody.additionalneeds);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/booking/{{id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "booking",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PartialUpdateBooking",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Today's date as Checkin Date\r\nvar checkin = require('moment');\r\nconsole.log(checkin);\r\nvar checkinDate = checkin().format('YYYY-MM-DD');\r\nconsole.log(checkinDate);\r\npm.environment.set(\"checkindate\", checkinDate);\r\n\r\n// Checkout Date after 15 days\r\nvar checkout = require('moment');\r\nconsole.log(checkout);\r\nvar checkoutDate = checkout(). add(15, 'days').format('YYYY-MM-DD');\r\npm.environment.set(\"checkoutdate\", checkoutDate);"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Assertion for Status code\r\npm.test(\"TC-1. Verify if the status code is 200\", function () {\r\n    pm.expect(pm.response.code).to.eql(200);\r\n});\r\n\r\n// Assertion for Response time\r\npm.test(\"TC-2. Verify if the response time is less than 500ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(500);\r\n});\r\n\r\n// Assertion for Response size\r\npm.test(\"TC-3. Verify if the response size is less than 200 bytes\", function () {\r\n    pm.expect(pm.response.text().length).to.be.below(200);\r\n});\r\n\r\n// Assertion for First name\r\nvar responsebody = pm.response.json();\r\npm.test(\"TC-4. Verify if the first name is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"firstname\")).to.eql(responsebody.firstname);\r\n});\r\n\r\n// Assertion for Last name\r\npm.test(\"TC-5. Verify if the last name is matching the environment\", function () {\r\n    pm.expect(responsebody.lastname).to.eql(pm.environment.get(\"lastname\"));\r\n});\r\n\r\n// Assertion for Total price\r\npm.test(\"TC-6. Verify if the total price is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"totalprice\")).to.eql(String(responsebody.totalprice));\r\n});\r\n\r\n// Assertion for Deposit paid\r\npm.test(\"TC-7. Verify if the deposit paid is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"depositpaid\")).to.eql(String(responsebody.depositpaid));\r\n});\r\n\r\n// Assertion for Checkin date\r\npm.test(\"TC-8. Verify if the checkin date is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"checkindate\")).to.eql(responsebody.bookingdates.checkin);\r\n});\r\n\r\n// Assertion for Checkout date\r\npm.test(\"TC-9. Verify if the checkout date is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"checkoutdate\")).to.eql(responsebody.bookingdates.checkout);\r\n});\r\n\r\n// Assertion for Additional needs\r\npm.test(\"TC-10. Verify if the additional needs is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"additionalneeds\")).to.eql(responsebody.additionalneeds);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Cookie",
+            "value": "token={{token}}"
+          },
+          {
+            "key": "Authorization",
+            "value": "Basic"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"bookingdates\" : {\n        \"checkin\" : \"{{checkindate}}\",\n        \"checkout\" : \"{{checkoutdate}}\"\n    }\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/booking/{{id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "booking",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetBookingId Copy 2",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Assertion for Status code\r\npm.test(\"TC-1. Verify if the status code is 200\", function () {\r\n    pm.expect(pm.response.code).to.eql(200);\r\n});\r\n\r\n// Assertion for Response time\r\npm.test(\"TC-2. Verify if the response time is less than 500ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(500);\r\n});\r\n\r\n// Assertion for Response size\r\npm.test(\"TC-3. Verify if the response size is less than 200 bytes\", function () {\r\n    pm.expect(pm.response.text().length).to.be.below(200);\r\n});\r\n\r\n// Assertion for First name\r\nvar responsebody = pm.response.json();\r\npm.test(\"TC-4. Verify if the first name is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"firstname\")).to.eql(responsebody.firstname);\r\n});\r\n\r\n// Assertion for Last name\r\npm.test(\"TC-5. Verify if the last name is matching the environment\", function () {\r\n    pm.expect(responsebody.lastname).to.eql(pm.environment.get(\"lastname\"));\r\n});\r\n\r\n// Assertion for Total price\r\npm.test(\"TC-6. Verify if the total price is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"totalprice\")).to.eql(String(responsebody.totalprice));\r\n});\r\n\r\n// Assertion for Deposit paid\r\npm.test(\"TC-7. Verify if the deposit paid is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"depositpaid\")).to.eql(String(responsebody.depositpaid));\r\n});\r\n\r\n// Assertion for Checkin date\r\npm.test(\"TC-8. Verify if the checkin date is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"checkindate\")).to.eql(responsebody.bookingdates.checkin);\r\n});\r\n\r\n// Assertion for Checkout date\r\npm.test(\"TC-9. Verify if the checkout date is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"checkoutdate\")).to.eql(responsebody.bookingdates.checkout);\r\n});\r\n\r\n// Assertion for Additional needs\r\npm.test(\"TC-10. Verify if the additional needs is matching the environment\", function () {\r\n    pm.expect(pm.environment.get(\"additionalneeds\")).to.eql(responsebody.additionalneeds);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/booking/{{id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "booking",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DeleteBooking",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Assertion for Status code\r\npm.test(\"TC-1. Verify if the status code is 201\", function () {\r\n    pm.expect(pm.response.code).to.eql(201);\r\n});\r\n\r\n// Assertion for Response time\r\npm.test(\"TC-2. Verify if the response time is less than 500ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(500);\r\n});\r\n\r\n// Assertion for Response size\r\npm.test(\"TC-3. Verify if the response size is less than 50 bytes\", function () {\r\n    pm.expect(pm.response.text().length).to.be.below(50);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Cookie",
+            "value": "token={{token}}"
+          },
+          {
+            "key": "Authorization",
+            "value": "Basic"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/booking/{{id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "booking",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetBookingId Copy 3",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// Assertion for Status code\r\npm.test(\"TC-1. Verify if the status code is 404\", function () {\r\n    pm.expect(pm.response.code).to.eql(404);\r\n});\r\n\r\n// Assertion for Response time\r\npm.test(\"TC-2. Verify if the response time is less than 500ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(500);\r\n});\r\n\r\n// Assertion for Response size\r\npm.test(\"TC-3. Verify if the response size is less than 50 bytes\", function () {\r\n    pm.expect(pm.response.text().length).to.be.below(50);\r\n});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/booking/{{id}}",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "booking",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
